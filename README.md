@@ -32,8 +32,9 @@ You are to spend between three and eight hours improving this simple Breakout im
 
 # Time Details and Changelist
 _TO DO_
-<30 min> Read and review code
-<30 min> Prototype adding health and damage on collision
+* <30 min> Read and review code
+* <30 min> Prototype adding health and damage on collision
+* <1 hour> Explosion collision checking and distance based damage. Health shown by red strength
 <Add information to this section about the time you've taken for this task along with a professional changelist.>
 
 ---
