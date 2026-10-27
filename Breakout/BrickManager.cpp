@@ -46,10 +46,15 @@ int BrickManager::checkCollision(sf::CircleShape& ball, sf::Vector2f& direction)
             // unless it's horizontal (collision from side)
             collisionResponse = 1;
 
+        sf::CircleShape explosion;
+        explosion.setPosition(ballPosition);
+        explosion.setRadius(200.f);
+        checkExplosionRadius(explosion);
+
         // Mark the brick as destroyed (for simplicity, let's just remove it from rendering)
         // In a complete implementation, you would set an _isDestroyed flag or remove it from the vector
-        brick = _bricks.back();
-        _bricks.pop_back();
+        /*brick = _bricks.back();
+        _bricks.pop_back();*/
         break;
     }
     if (_bricks.size() == 0)
@@ -57,4 +62,39 @@ int BrickManager::checkCollision(sf::CircleShape& ball, sf::Vector2f& direction)
         _gameManager->levelComplete();
     }
     return collisionResponse;
+}
+
+float BrickManager::checkExplosionRadius(sf::CircleShape& explosion)
+{
+    float radius = explosion.getRadius();
+    float damage = 0.f;
+    for (auto& brick : _bricks) {
+        if (!brick.getBounds().intersects(explosion.getGlobalBounds())) continue;    // no collision, skip.
+        
+        //if theres a collision calculate the distance from the centre (this is terrible code how am i in uni rn and i cant do vector math)
+        float brickX = brick.getBounds().getPosition().x + brick.getBounds().width * 0.5;
+        float brickY = brick.getBounds().getPosition().y - brick.getBounds().height * 0.5;
+        float dist = abs(explosion.getPosition().x - brickX) * abs(explosion.getPosition().x - brickX) + abs(explosion.getPosition().y - brickY) * abs(explosion.getPosition().y - brickY);
+        dist = dist / dist;
+        if (dist > radius * 0.5)
+        {
+            damage = 10;
+        }
+        else if (dist > radius * 0.25)
+        {
+            damage = 20;
+        }
+        else
+        {
+            damage = 50;
+        }
+        
+        brick.damage(damage);
+        
+    }
+    if (_bricks.size() == 0)
+    {
+        _gameManager->levelComplete();
+    }
+    return 0;
 }
